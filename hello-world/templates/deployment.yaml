@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Release_Name  }}
+  labels:
+    app: {{ .Values.Release_Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.Release_Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Release_Name  }}
+    spec:
+      containers:
+        - name: {{ .Values.Chart_Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }} 
