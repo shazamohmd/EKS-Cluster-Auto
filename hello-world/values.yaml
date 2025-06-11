@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: hello-world-java
+  repository: public.ecr.aws/w1v4n0n8/java/hello-world
   tag: latest
   pullPolicy: IfNotPresent
 
