@@ -3,46 +3,40 @@ pipeline {
     
     environment {
         AWS_DEFAULT_REGION = 'us-east-1'  // Change this to your desired region
-        ECR_REPO_NAME = 'eks-app'         // Your ECR repository name
+        ECR_REPO_NAME = 'java/hello-world'         // Your ECR repository name
         IMAGE_TAG = "v${BUILD_NUMBER}"     // Using Jenkins build number for image tag
     }
     
     stages {
-        // stage('Build and Push to ECR') {
-        //     steps {
-        //         script {
-        //             // Get AWS account ID
-        //             def AWS_ACCOUNT_ID = sh(
-        //                 script: "aws sts get-caller-identity --query 'Account' --output text",
-        //                 returnStdout: true
-        //             ).trim()
+        stage('Build and Push to ECR') {
+            steps {
+                script {
+                  withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CRED']]) {
                     
-        //             // Set ECR repository URL
-        //             def ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}"
+                    // Set ECR repository URL
+                    def ECR_REPO_URL = "public.ecr.aws/w1v4n0n8/java/hello-world"
                     
-        //             // ECR login
-        //             sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+                    // ECR login
+                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
                     
-        //             dir('Application') {
-        //                 // Build Docker image
-        //                 sh "docker build -t ${ECR_REPO_NAME}:${IMAGE_TAG} ."
+                    dir('Application') {
+                        // Build Docker image
+                        sh "docker build -t ${ECR_REPO_NAME}:${IMAGE_TAG} ."
                         
-        //                 // Tag image for ECR
-        //                 sh "docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}:${IMAGE_TAG}"
-        //                 sh "docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}:latest"
+                        // Tag image for ECR
+                        sh "docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}:${IMAGE_TAG}"
+                        sh "docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}:latest"
                         
-        //                 // Push image to ECR
-        //                 sh "docker push ${ECR_REPO_URL}:${IMAGE_TAG}"
-        //                 sh "docker push ${ECR_REPO_URL}:latest"
+                        // Push image to ECR
+                        sh "docker push ${ECR_REPO_URL}:${IMAGE_TAG}"
+                        sh "docker push ${ECR_REPO_URL}:latest"
                         
-        //                 // Clean up local images
-        //                 sh "docker rmi ${ECR_REPO_NAME}:${IMAGE_TAG}"
-        //                 sh "docker rmi ${ECR_REPO_URL}:${IMAGE_TAG}"
-        //                 sh "docker rmi ${ECR_REPO_URL}:latest"
-        //             }
-        //         }
-        //     }
-        // }
+                       
+                    }
+                  }
+                }
+            }
+        }
    
         stage('Building the infrastructure') {
             steps {
