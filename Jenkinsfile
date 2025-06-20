@@ -17,7 +17,7 @@ pipeline {
                     def ECR_REPO_URL = "public.ecr.aws/w1v4n0n8/java/hello-world"
                     
                     // ECR login
-                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+                    sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws"
                     
                     dir('Application') {
                         // Build Docker image
