@@ -38,14 +38,14 @@ pipeline {
             }
         }
    
-        stage('Building the infrastructure') {
-            steps {
-                  withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CRED']]) { 
-                    sh 'terraform -chdir=terraform/ init -reconfigure'
-                    sh "terraform -chdir=terraform/ apply -auto-approve"
-                }
-            }
-        }
+        // stage('Building the infrastructure') {
+        //     steps {
+        //           withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CRED']]) { 
+        //             sh 'terraform -chdir=terraform/ init -reconfigure'
+        //             sh "terraform -chdir=terraform/ apply -auto-approve"
+        //         }
+        //     }
+        // }
     }
     
     post {
