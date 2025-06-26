@@ -47,4 +47,12 @@ resource "null_resource" "configure_and_test_cluster" {
      EOT
 
   }
+    provisioner "local-exec" {
+    command = "helm install myapp ../hello-world"
+  }
+    depends_on = [
+    module.networks,
+    module.eks,
+    
+  ]
 }
