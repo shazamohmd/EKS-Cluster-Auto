@@ -25,7 +25,26 @@ module "eks" {
   public_subnet1  = module.networks.public1
   public_subnet2  = module.networks.public2
 
+}
+resource "null_resource" "configure_and_test_cluster" {
+  provisioner "local-exec" {
+    command = <<EOT
+      aws eks update-kubeconfig --region ${var.region} --name ${var.cluster_name}
+      kubectl get nodes
+      echo "connection"
+    EOT
+  }
+    provisioner "local-exec" {
+    command = <<EOT
+     git clone https://github.com/argoproj/argo-helm.git
+     cd argo-helm/charts/argo-cd/
+     kubectl create ns myargo
+     helm dependency up
+     helm install myargo . -f values.yaml -n myargo
+     kubectl get po -n myargo
+     kubectl port-forward service/myargo-argocd-server 8090:80 -n myargo
+     echo "argocd"
+     EOT
 
-
-
+  }
 }
