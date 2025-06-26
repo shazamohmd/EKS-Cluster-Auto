@@ -29,7 +29,7 @@ module "eks" {
 resource "null_resource" "configure_and_test_cluster" {
   provisioner "local-exec" {
     command = <<EOT
-      aws eks update-kubeconfig --region ${var.region} --name ${var.cluster_name}
+      aws eks update-kubeconfig --region ${var.aws_region} --name ${var.project_name}-jcluster
       kubectl get nodes
       echo "connection"
     EOT
